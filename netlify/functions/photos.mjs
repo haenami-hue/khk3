@@ -55,8 +55,9 @@ export default async (req) => {
   if (!data.byteLength) return json({ code: "invalid_request" }, 400);
   if (data.byteLength > MAX_BYTES) return json({ code: "too_large" }, 413);
 
-  const { etag } = await store.set(id, data, { metadata: { type, at: new Date().toISOString() } });
-  return json({ ok: true, v: etag || String(Date.now()) });
+  await store.set(id, data, { metadata: { type, at: new Date().toISOString() } });
+  const meta = await store.getMetadata(id);
+  return json({ ok: true, v: meta?.etag || String(Date.now()) });
 };
 
 export const config = { path: "/api/photos" };
