@@ -1,0 +1,12 @@
+{
+  "name": "khk3-family-tree",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/photos.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "sharp": "^0.33.5"
+  }
+}

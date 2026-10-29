@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>김해김씨 삼현파 가계도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+/* Layout: 족보 한 권 — 좁은 세로 단, 먹선으로 이은 들여쓰기 계보, 이름을 누르면 아래에서 사진 시트가 올라온다 */
+:root {
+  --paper: #f3f4ef;        /* 백자빛 한지 */
+  --leaf: #fbfbf8;         /* 카드 면 */
+  --ink: #1f2328;          /* 먹 */
+  --ink-soft: #5b6168;
+  --rule: #c9cdc4;         /* 계보선 */
+  --indigo: #2c4a7a;       /* 쪽빛 */
+  --indigo-wash: #e3e8f1;
+  --seal: #b23a2b;         /* 낙관 */
+  --hit: #f4e3a1;
+  --shadow: 0 1px 2px rgba(31,35,40,.06), 0 6px 18px rgba(31,35,40,.06);
+  --f-display: "Gowun Batang", "Nanum Myeongjo", "Batang", serif;
+  --f-ui: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #15181c; --leaf: #1d2126; --ink: #e8e9e4; --ink-soft: #a3a8ae; --rule: #3a4048;
+    --indigo: #9db4dc; --indigo-wash: #243049; --seal: #e0715f; --hit: #5b4c17;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #15181c; --leaf: #1d2126; --ink: #e8e9e4; --ink-soft: #a3a8ae; --rule: #3a4048;
+  --indigo: #9db4dc; --indigo-wash: #243049; --seal: #e0715f; --hit: #5b4c17;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+body {
+  margin: 0;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--f-ui); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+.wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+
+/* ── 머리 ── */
+header.masthead { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; padding-top: 4px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--ink-soft); margin: 0 0 4px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.hanja { font-family: var(--f-display); color: var(--ink-soft); margin: 6px 0 0; font-size: 15px; letter-spacing: .08em; }
+.seal {
+  width: 58px; height: 58px; border: 2px solid var(--seal); color: var(--seal); border-radius: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; place-items: center; padding: 4px;
+  font-family: var(--f-display); font-weight: 700; font-size: 17px; line-height: 1; transform: rotate(-4deg);
+}
+.stats { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.stats b { color: var(--ink); font-weight: 600; }
+
+.search { position: relative; }
+.search input {
+  width: 100%; font: inherit; font-size: 16px; padding: 11px 14px 11px 40px;
+  border: 1px solid var(--rule); border-radius: 10px; background: var(--leaf); color: var(--ink);
+}
+.search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; stroke: var(--ink-soft); fill: none; }
+.search-note { font-size: 13px; color: var(--ink-soft); margin: 6px 2px 0; min-height: 1em; }
+
+.legend { display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft); }
+.legend span { border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
+.legend b { font-weight: 600; color: var(--indigo); margin-right: 4px; }
+
+.notice { font-size: 13px; color: var(--ink-soft); background: var(--leaf); border: 1px dashed var(--rule); border-radius: 10px; padding: 10px 12px; margin: 0; }
+
+/* ── 사람 ── */
+.person {
+  display: inline-flex; align-items: center; gap: 10px; min-width: 0;
+  background: none; border: 0; padding: 4px 6px 4px 0; border-radius: 999px; cursor: pointer; text-align: left;
+}
+.person:hover .nm { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.av {
+  flex: none; width: 38px; height: 38px; border-radius: 50%; overflow: hidden;
+  background: var(--indigo-wash); color: var(--indigo); border: 1px solid var(--rule);
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; font-size: 13px;
+}
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.av.has { border-color: var(--indigo); }
+.nm { font-family: var(--f-display); font-size: 17px; font-weight: 700; white-space: nowrap; }
+.sub { display: block; font-family: var(--f-ui); font-size: 12px; font-weight: 400; color: var(--ink-soft); }
+.person.hit .nm { background: var(--hit); border-radius: 4px; padding: 0 3px; }
+.dim { opacity: .35; }
+
+/* 시조 */
+.root {
+  background: var(--leaf); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: flex; align-items: center; gap: 14px;
+}
+.root .av { width: 64px; height: 64px; font-size: 18px; }
+.root .nm { font-size: 24px; }
+.gen-tag { font-size: 11px; letter-spacing: .1em; color: var(--seal); font-weight: 600; display: block; }
+
+/* 2세 가지 */
+.branches { display: flex; flex-direction: column; gap: 12px; position: relative; }
+.branch { background: var(--leaf); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow); }
+.branch-head { display: flex; align-items: center; gap: 8px; padding: 12px 12px 12px 14px; }
+.branch-head .person .av { width: 46px; height: 46px; }
+.branch-head .person .nm { font-size: 19px; }
+.toggle {
+  margin-left: auto; flex: none; background: none; border: 1px solid var(--rule); border-radius: 999px;
+  padding: 4px 10px; font-size: 12px; color: var(--ink-soft); cursor: pointer; display: inline-flex; gap: 4px; align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+.toggle svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform .2s; }
+.branch.closed .toggle svg { transform: rotate(-90deg); }
+.branch.closed .kids { display: none; }
+
+/* 3세·4세 계보선 */
+.kids { list-style: none; margin: 0; padding: 0 12px 12px 34px; }
+.kids li { position: relative; padding-left: 18px; }
+.kids li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1.5px solid var(--rule); }
+.kids li:last-child::before { bottom: auto; height: 25px; }
+.kids li::after { content: ""; position: absolute; left: 0; top: 25px; width: 14px; border-top: 1.5px solid var(--rule); }
+.kids .row { display: flex; align-items: center; gap: 8px; padding: 3px 0; min-width: 0; flex-wrap: wrap; }
+.kids .gk { list-style: none; margin: 0 0 4px; padding: 0 0 0 20px; }
+.kids .gk li { padding-left: 16px; }
+.kids .gk li::after { width: 12px; top: 21px; }
+.kids .gk li:last-child::before { height: 21px; }
+.kids .gk .av { width: 30px; height: 30px; font-size: 11px; }
+.kids .gk .nm { font-size: 15px; font-weight: 400; }
+.none { font-size: 12px; color: var(--ink-soft); }
+
+footer { font-size: 12px; color: var(--ink-soft); text-align: center; }
+
+/* ── 보기 전환 ── */
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--indigo-wash); border-radius: 10px; }
+.views button { border: 0; background: none; padding: 8px; border-radius: 7px; font-size: 14px; font-weight: 500; color: var(--ink-soft); cursor: pointer; }
+.views button[aria-pressed="true"] { background: var(--leaf); color: var(--indigo); font-weight: 600; box-shadow: var(--shadow); }
+
+/* ── 전체 보기: 한 화면 계보도 ── */
+.ov { background: var(--leaf); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow); padding: 14px 6px 12px; }
+.ov .person { padding: 0; border-radius: 4px; gap: 0; }
+.ov-root { display: flex; justify-content: center; }
+.ov-root .person { flex-direction: column; gap: 4px; text-align: center; }
+.ov-root .av { width: 48px; height: 48px; font-size: 14px; }
+.ov-root .nm { font-size: 18px; }
+.ov-root .nm .sub { font-size: 11px; }
+.ov-cols {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: relative;
+  margin-top: 10px; padding-top: 14px;
+}
+.ov-col { min-width: 0; display: flex; flex-direction: column; gap: 7px; padding: 0 3px; position: relative; }
+.ov-col::before { content: ""; position: absolute; top: -14px; left: 50%; height: 12px; border-left: 1.5px solid var(--rule); }
+.ov-cols::before { content: ""; position: absolute; left: 50%; top: -10px; height: 10px; border-left: 1.5px solid var(--rule); }
+.ov-cols::after { content: ""; position: absolute; left: 10%; right: 10%; top: 0; border-top: 1.5px solid var(--rule); }
+.ov-son { display: flex; justify-content: center; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.ov-son .person { flex-direction: column; gap: 3px; text-align: center; }
+.ov-son .av { width: 34px; height: 34px; font-size: 11px; }
+.ov-son .nm { font-size: 13.5px; white-space: normal; word-break: keep-all; }
+.ov-son .nm .sub { font-size: 10px; line-height: 1.25; }
+.ov-g { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ov-g > .person .nm { font-size: 13px; font-weight: 700; }
+.ov-gg { display: flex; flex-wrap: wrap; gap: 0 5px; padding-left: 6px; border-left: 1.5px solid var(--rule); min-width: 0; }
+.ov-gg .person .nm { font-family: var(--f-ui); font-size: 11.5px; font-weight: 400; color: var(--ink-soft); white-space: normal; }
+.ov-gg .none { font-size: 10.5px; }
+.ov .person[data-ph].has .nm::after { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--indigo); margin-left: 2px; vertical-align: 2px; }
+.ov-hint { font-size: 12px; color: var(--ink-soft); text-align: center; margin: 10px 0 0; }
+@media (min-width: 480px) {
+  .ov { padding-inline: 12px; }
+  .ov-son .nm { font-size: 15px; }
+  .ov-g > .person .nm { font-size: 14px; }
+  .ov-gg .person .nm { font-size: 12.5px; }
+}
+/* 가로 화면·태블릿: 넓어진 폭을 쓴다 */
+@media (min-width: 700px) {
+  .wrap { max-width: 980px; }
+  .ov { padding: 18px 16px 14px; }
+  .ov-col { padding: 0 8px; gap: 9px; }
+  .ov-son .av { width: 42px; height: 42px; }
+  .ov-son .nm { font-size: 17px; }
+  .ov-g > .person .nm { font-size: 15px; }
+  .ov-gg .person .nm { font-size: 13.5px; }
+  .ov-gg { gap: 0 8px; }
+  .branches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+
+/* ── 사진 시트 ── */
+.scrim { position: fixed; inset: 0; background: rgba(10,12,15,.45); z-index: 20; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 21;
+  background: var(--leaf); border-radius: 18px 18px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,.2);
+  padding-top: 10px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-height: 92vh; overflow-y: auto;
+  animation: up .22s ease-out;
+}
+@keyframes up { from { transform: translateY(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .sheet { animation: none; } .toggle svg { transition: none; } }
+.sheet-in { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.grab { width: 40px; height: 4px; border-radius: 2px; background: var(--rule); margin: 0 auto; }
+.photo {
+  width: 100%; max-width: 100%; aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden;
+  background: var(--indigo-wash); color: var(--indigo); display: grid; place-items: center;
+  font-family: var(--f-display); font-size: 64px; font-weight: 700; border: 1px solid var(--rule);
+}
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 휴대폰 가로: 사진은 왼쪽, 이름과 버튼은 오른쪽 */
+@media (orientation: landscape) and (max-height: 600px) {
+  .sheet { max-height: 96vh; }
+  .sheet-in { max-width: 760px; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 18px; row-gap: 12px; align-content: start; }
+  .sheet-in > * { grid-column: 2; }
+  .sheet-in > .grab { grid-column: 1 / -1; }
+  .sheet-in > .photo { grid-column: 1; grid-row: 2 / span 5; width: min(72vh, 46vw); font-size: 48px; }
+}
+.sheet h2 { font-family: var(--f-display); font-size: 26px; margin: 0; line-height: 1.2; }
+.lineage { font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; }
+.lineage b { color: var(--indigo); font-weight: 600; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  flex: 1 1 140px; border-radius: 10px; padding: 12px 14px; font-size: 15px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--rule); background: var(--leaf); color: var(--ink);
+}
+.btn.primary { background: var(--indigo); border-color: var(--indigo); color: var(--leaf); }
+.btn.danger { color: var(--seal); border-color: var(--seal); background: none; }
+.btn:disabled { opacity: .55; cursor: progress; }
+.msg { font-size: 13px; color: var(--ink-soft); margin: 0; min-height: 1em; }
+.msg.err { color: var(--seal); }
+.confirm { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--seal); border-radius: 10px; }
+.confirm p { margin: 0; font-size: 14px; }
+.codebox { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--rule); border-radius: 10px; }
+.codebox label { font-size: 14px; }
+.codebox input { font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">족보 · 가계도</p>
+      <h1>김해김씨 삼현파</h1>
+      <p class="hanja">金海金氏 三賢派 · 김만권 가계</p>
+    </div>
+    <div class="seal" aria-hidden="true"><span>金</span><span>海</span><span>三</span><span>賢</span></div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="이름으로 찾기 (예: 김민준)" autocomplete="off" aria-label="이름 검색">
+    </div>
+    <p class="search-note" id="searchNote">이름을 누르면 사진을 보고 등록할 수 있습니다.</p>
+  </div>
+
+  <div class="views" role="group" aria-label="보기 방식">
+    <button type="button" id="vAll" aria-pressed="true">전체 보기</button>
+    <button type="button" id="vDetail" aria-pressed="false">자세히 (사진)</button>
+  </div>
+
+  <p class="notice" id="notice" hidden></p>
+
+  <div id="overview"></div>
+
+  <div id="detail" hidden>
+    <div class="legend" aria-label="세대 구분" style="margin-bottom:12px">
+      <span><b>1세</b>시조</span><span><b>2세</b>자녀</span><span><b>3세</b>손</span><span><b>4세</b>증손</span>
+    </div>
+    <div id="tree"></div>
+  </div>
+
+  <footer>김해김씨 삼현파 · 김만권 가계</footer>
+</div>
+
+<input type="file" id="file" accept="image/*" hidden>
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetName" hidden>
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="photo" id="sheetPhoto"></div>
+    <div>
+      <h2 id="sheetName"></h2>
+      <p class="lineage" id="sheetLineage"></p>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="btnUpload" type="button" hidden>사진 등록</button>
+      <button class="btn danger" id="btnRemove" type="button" hidden>사진 삭제</button>
+      <button class="btn" id="btnClose" type="button">닫기</button>
+    </div>
+    <div class="confirm" id="confirmBox" hidden>
+      <p>올린 사진을 삭제할까요? 모든 가족에게서 사라집니다.</p>
+      <div class="actions">
+        <button class="btn danger" id="btnConfirmDel" type="button">삭제</button>
+        <button class="btn" id="btnCancelDel" type="button">취소</button>
+      </div>
+    </div>
+    <div class="codebox" id="codeBox" hidden>
+      <label for="code">가족 확인 코드를 입력해 주세요</label>
+      <input id="code" type="password" autocomplete="off">
+      <button class="btn primary" id="btnCode" type="button">확인</button>
+    </div>
+    <p class="msg" id="sheetMsg"></p>
+  </div>
+</div>
+
+<script src="photos/index.js"></script>
+<script>
+/* 원본: 김해김씨 삼현파 가계표 (김만권 → 자 → 손 → 증손) */
+const TREE = {
+  name: "김만권", sub: "김해김씨 삼현파",
+  kids: [
+    { name: "김원영", kids: [
+      { name: "김종수", kids: ["김해남", "김산이"] },
+    ]},
+    { name: "김현석", kids: [
+      { name: "김연수", kids: ["김민준", "김정명"] },
+      { name: "김영근", kids: ["김민재"] },
+      { name: "김행수", kids: ["김민경", "김민호"] },
+      { name: "김철웅", kids: ["김이슬"] },
+      { name: "김미화", kids: ["신수창", "신윤창"] },
+      { name: "김성학", kids: ["김유경", "김찬휘", "김서연"] },
+    ]},
+    { name: "김석춘", kids: [
+      { name: "김순례", kids: ["이명륜", "이명숙"] },
+      { name: "김순임", kids: ["이경민", "이경태"] },
+      { name: "김순남", kids: ["최연아", "최성아", "최득규"] },
+      { name: "김종순", kids: ["심우진", "심채현"] },
+      { name: "김황수", kids: [] },
+      { name: "김수연", kids: ["김이경", "김가은", "김준영"] },
+      { name: "김황일", kids: [] },
+    ]},
+    { name: "김영율", kids: [
+      { name: "김성일", kids: ["김관웅", "김준웅"] },
+      { name: "김성희", kids: ["김기범", "김기재"] },
+      { name: "김정화", kids: ["박치환", "박지영"] },
+      { name: "김성선", kids: ["김가연", "김솔민"] },
+    ]},
+    { name: "김홍임", sub: "배우자 고규근", kids: [
+      { name: "고은숙", kids: ["박제선"] },
+      { name: "고현선", kids: ["고윤형", "고윤혁"] },
+      { name: "고현숙", kids: ["Kathy Lee", "Debbie Lee", "Carol Lee"] },
+      { name: "고영태", kids: ["고명준", "고동휘"] },
+    ]},
+  ],
+};
+const GEN = ["", "1세 · 시조", "2세 · 자녀", "3세 · 손", "4세 · 증손"];
+
+/* 사람 목록: id는 계보 위치로 정해져 사진과 연결된다 (예: p-2-1-0) */
+const people = new Map();
+function index(node, id, gen, path) {
+  const n = typeof node === "string" ? { name: node } : node;
+  const p = { id, name: n.name, sub: n.sub || "", gen, path: [...path, n.name] };
+  people.set(id, p);
+  p.kids = (n.kids || []).map((k, i) => index(k, id + "-" + i, gen + 1, p.path));
+  return p;
+}
+const root = index(TREE, "p", 1, []);
+
+function initials(name) {
+  if (/^[A-Za-z]/.test(name)) return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  return name.length > 2 ? name.slice(1) : name;
+}
+
+const uploaded = {};         // personId -> 방문자가 웹에서 올린 사진 주소
+const photos = {};           // personId -> public/photos/ 에 넣어 둔 사진 주소
+const photoOf = id => uploaded[id] || photos[id];
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+function personBtn(p) {
+  const b = el("button", "person");
+  b.type = "button"; b.dataset.id = p.id;
+  const av = el("span", "av"); av.dataset.av = p.id;
+  const nm = el("span", "nm", p.name);
+  if (p.sub) nm.append(el("span", "sub", p.sub));
+  b.append(av, nm);
+  b.addEventListener("click", () => openSheet(p.id));
+  return b;
+}
+
+function paintAvatar(av, id) {
+  const p = people.get(id);
+  av.textContent = "";
+  av.classList.toggle("has", !!photoOf(id));
+  if (photoOf(id)) {
+    const img = new Image();
+    img.alt = p.name; img.loading = "lazy"; img.src = photoOf(id);
+    img.onerror = () => { av.textContent = initials(p.name); av.classList.remove("has"); };
+    av.append(img);
+  } else av.textContent = initials(p.name);
+}
+function paintAll() {
+  document.querySelectorAll("[data-av]").forEach(av => paintAvatar(av, av.dataset.av));
+  document.querySelectorAll("[data-ph]").forEach(b => b.classList.toggle("has", !!photoOf(b.dataset.ph)));
+  renderStats();
+  if (current) paintSheet();
+}
+
+function render() {
+  const tree = document.getElementById("tree");
+  const rootCard = el("div", "root");
+  const rb = personBtn(root);
+  rb.querySelector(".nm").prepend(el("span", "gen-tag", "1세 · 시조"));
+  rootCard.append(rb);
+
+  const branches = el("div", "branches");
+  for (const son of root.kids) {
+    const card = el("section", "branch"); card.dataset.branch = son.id;
+    const head = el("div", "branch-head");
+    const count = son.kids.reduce((s, g) => s + 1 + g.kids.length, 0);
+    const tg = el("button", "toggle"); tg.type = "button";
+    tg.setAttribute("aria-expanded", "true");
+    tg.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>';
+    tg.append("후손 " + count + "명");
+    tg.addEventListener("click", () => setOpen(card, card.classList.contains("closed")));
+    head.append(personBtn(son), tg);
+
+    const ul = el("ul", "kids");
+    for (const g of son.kids) {
+      const li = el("li");
+      const row = el("div", "row");
+      row.append(personBtn(g));
+      li.append(row);
+      if (g.kids.length) {
+        const gul = el("ul", "gk");
+        for (const gg of g.kids) { const gli = el("li"); gli.append(personBtn(gg)); gul.append(gli); }
+        li.append(gul);
+      }
+      ul.append(li);
+    }
+    card.append(head, ul);
+    branches.append(card);
+  }
+  tree.append(rootCard, branches);
+  paintAll();
+}
+/* 전체 보기: 원본 표처럼 자녀 5가지를 나란히, 손 아래에 증손을 묶어 한 화면에 */
+function miniBtn(p) {
+  const b = el("button", "person");
+  b.type = "button"; b.dataset.id = p.id; b.dataset.ph = p.id;
+  b.append(el("span", "nm", p.name));
+  b.addEventListener("click", () => openSheet(p.id));
+  return b;
+}
+function renderOverview() {
+  const box = el("div", "ov");
+  const r = el("div", "ov-root"); r.append(personBtn(root));
+  const cols = el("div", "ov-cols");
+  for (const son of root.kids) {
+    const col = el("div", "ov-col");
+    const head = el("div", "ov-son"); head.append(personBtn(son));
+    col.append(head);
+    for (const g of son.kids) {
+      const gb = el("div", "ov-g");
+      gb.append(miniBtn(g));
+      if (g.kids.length) {
+        const gg = el("div", "ov-gg");
+        g.kids.forEach(k => gg.append(miniBtn(k)));
+        gb.append(gg);
+      }
+      col.append(gb);
+    }
+    cols.append(col);
+  }
+  box.append(r, cols, el("p", "ov-hint", "굵은 글씨 손 · 작은 글씨 증손 · 이름을 누르면 사진"));
+  document.getElementById("overview").append(box);
+}
+
+let view = "all";
+try { if (localStorage.getItem("khk3-view") === "detail") view = "detail"; } catch {}
+function setView(v) {
+  view = v;
+  $("overview").hidden = v !== "all";
+  $("detail").hidden = v !== "detail";
+  $("vAll").setAttribute("aria-pressed", String(v === "all"));
+  $("vDetail").setAttribute("aria-pressed", String(v === "detail"));
+  try { localStorage.setItem("khk3-view", v); } catch {}
+  if (q.value.trim()) q.dispatchEvent(new Event("input"));
+}
+
+function setOpen(card, open) {
+  card.classList.toggle("closed", !open);
+  card.querySelector(".toggle").setAttribute("aria-expanded", String(open));
+}
+
+function renderStats() {
+  const total = people.size;
+  const byGen = [0, 0, 0, 0, 0];
+  people.forEach(p => byGen[p.gen]++);
+  const withPhoto = [...people.keys()].filter(photoOf).length;
+  document.getElementById("stats").innerHTML =
+    `<span><b>4</b>대</span><span><b>${total}</b>명</span>` +
+    `<span>자녀 <b>${byGen[2]}</b> · 손 <b>${byGen[3]}</b> · 증손 <b>${byGen[4]}</b></span>` +
+    `<span>사진 <b>${withPhoto}</b>장</span>`;
+}
+
+/* ── 검색 ── */
+const q = document.getElementById("q");
+q.addEventListener("input", () => {
+  const term = q.value.trim().toLowerCase();
+  const btns = document.querySelectorAll(".person");
+  let hits = [];
+  btns.forEach(b => {
+    const p = people.get(b.dataset.id);
+    const hit = !!term && p.name.toLowerCase().includes(term);
+    b.classList.toggle("hit", hit);
+    b.classList.toggle("dim", !!term && !hit);
+    if (hit && b.closest(view === "all" ? "#overview" : "#detail")) hits.push(b);
+  });
+  document.querySelectorAll(".branch").forEach(card => {
+    if (term) setOpen(card, !!card.querySelector(".person.hit"));
+    else setOpen(card, true);
+  });
+  const note = document.getElementById("searchNote");
+  if (!term) note.textContent = "이름을 누르면 사진을 보고 등록할 수 있습니다.";
+  else if (!hits.length) note.textContent = `'${q.value.trim()}'와 일치하는 이름이 없습니다.`;
+  else {
+    note.textContent = `${hits.length}명 찾음`;
+    hits[0].scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+});
+
+/* ── 사진 보기·등록 ── */
+let current = null, busy = false, canUpload = false;
+const $ = id => document.getElementById(id);
+const sheet = $("sheet"), scrim = $("scrim");
+
+function openSheet(id) {
+  current = id; $("confirmBox").hidden = true; $("codeBox").hidden = true; setMsg("");
+  paintSheet();
+  sheet.hidden = false; scrim.hidden = false;
+  $("btnClose").focus();
+}
+function closeSheet() {
+  if (busy) return;
+  const back = document.querySelector(`.person[data-id="${current}"]`);
+  sheet.hidden = true; scrim.hidden = true; current = null;
+  back && back.focus();
+}
+function paintSheet() {
+  const p = people.get(current);
+  $("sheetName").textContent = p.name + (p.sub ? ` (${p.sub})` : "");
+  const lin = $("sheetLineage"); lin.textContent = "";
+  lin.append(Object.assign(el("b"), { textContent: GEN[p.gen] }));
+  if (p.path.length > 1) lin.append(" · " + p.path.join(" › "));
+  const box = $("sheetPhoto"); box.textContent = "";
+  if (photoOf(current)) {
+    const img = new Image(); img.alt = p.name + " 사진"; img.src = photoOf(current);
+    img.onerror = () => { box.textContent = initials(p.name); };
+    box.append(img);
+  } else box.textContent = initials(p.name);
+  $("btnUpload").hidden = !canUpload;
+  $("btnUpload").textContent = photoOf(current) ? "사진 변경" : "사진 등록";
+  $("btnRemove").hidden = !(canUpload && uploaded[current]);
+}
+function setMsg(t, err) { const m = $("sheetMsg"); m.textContent = t; m.classList.toggle("err", !!err); }
+function setBusy(b) { busy = b; ["btnUpload", "btnRemove", "btnClose", "btnConfirmDel"].forEach(i => $(i).disabled = b); }
+
+scrim.addEventListener("click", closeSheet);
+$("btnClose").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !sheet.hidden) closeSheet(); });
+$("btnUpload").addEventListener("click", () => { $("file").value = ""; $("file").click(); });
+$("btnRemove").addEventListener("click", () => { $("confirmBox").hidden = false; });
+$("btnCancelDel").addEventListener("click", () => { $("confirmBox").hidden = true; });
+
+/* 방문자 사진 서버: netlify/functions/photos.mjs (/api/photos, Netlify Blobs 에 저장) */
+let familyCode = "";
+try { familyCode = localStorage.getItem("khk3-code") || ""; } catch {}
+const apiSrc = (id, v) => `/api/photos?id=${encodeURIComponent(id)}&v=${encodeURIComponent(v)}`;
+async function api(method, id, body, type) {
+  const headers = { "x-family-code": familyCode };
+  if (type) headers["content-type"] = type;
+  const r = await fetch(`/api/photos?id=${encodeURIComponent(id)}`, { method, headers, body });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw { code: j.code || (r.status === 413 ? "too_large" : "upstream_error") };
+  return j;
+}
+async function loadUploaded() {
+  const r = await fetch("/api/photos", { cache: "no-store" });
+  if (!r.ok) throw new Error(String(r.status));
+  const { photos: list = {} } = await r.json();
+  for (const k of Object.keys(uploaded)) delete uploaded[k];
+  for (const [id, v] of Object.entries(list)) if (people.has(id)) uploaded[id] = apiSrc(id, v);
+  if (!busy) paintAll();
+}
+
+/* 휴대폰 사진은 크므로 긴 변 1280px JPEG로 줄여서 올린다 */
+async function shrink(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = url; });
+    const max = 1280, s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas");
+    c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return await new Promise(ok => c.toBlob(ok, "image/jpeg", 0.86));
+  } catch { return null; } finally { URL.revokeObjectURL(url); }
+}
+
+const ERR = {
+  too_large: "사진 파일이 너무 큽니다. 다른 사진을 골라 주세요.",
+  unsupported_type: "이 형식의 파일은 올릴 수 없습니다. JPG나 PNG 사진을 골라 주세요.",
+  bad_code: "가족 확인 코드가 맞지 않습니다.",
+};
+let retry = null;   // 코드 입력 뒤 다시 할 동작
+function onFail(e, fallback, again) {
+  const code = e && e.code;
+  if (code === "need_code" || code === "bad_code") {
+    retry = again;
+    $("codeBox").hidden = false; $("code").value = ""; $("code").focus();
+    setMsg(code === "bad_code" ? ERR.bad_code : "", code === "bad_code");
+  } else setMsg(ERR[code] || fallback, true);
+}
+$("btnCode").addEventListener("click", () => {
+  const v = $("code").value.trim(); if (!v) return;
+  familyCode = v;
+  try { localStorage.setItem("khk3-code", v); } catch {}
+  $("codeBox").hidden = true; setMsg("");
+  if (retry) retry();
+});
+const pickPhoto = () => { $("file").value = ""; $("file").click(); };
+
+$("file").addEventListener("change", async () => {
+  const f = $("file").files[0]; if (!f || !current) return;
+  const id = current;
+  setBusy(true); setMsg("사진을 올리는 중…");
+  try {
+    const blob = (await shrink(f)) || f;
+    const j = await api("POST", id, blob, blob.type || "image/jpeg");
+    uploaded[id] = apiSrc(id, j.v); paintAll();
+    setMsg("사진을 등록했습니다.");
+  } catch (e) { onFail(e, "사진을 올리지 못했습니다. 다시 시도해 주세요.", pickPhoto); }
+  finally { setBusy(false); }
+});
+
+$("btnConfirmDel").addEventListener("click", async () => {
+  const id = current; if (!uploaded[id]) return;
+  setBusy(true); setMsg("삭제하는 중…");
+  try {
+    await api("DELETE", id);
+    delete uploaded[id]; paintAll();
+    $("confirmBox").hidden = true;
+    setMsg("사진을 삭제했습니다.");
+  } catch (e) { onFail(e, "사진을 삭제하지 못했습니다. 다시 시도해 주세요.", () => $("btnConfirmDel").click()); }
+  finally { setBusy(false); }
+});
+
+renderOverview();
+render();
+$("vAll").addEventListener("click", () => setView("all"));
+$("vDetail").addEventListener("click", () => setView("detail"));
+setView(view);
+
+/* public/photos/index.js: window.KHK3_FILES = { "이름": "파일명" } — scripts/photos.mjs 가 만든다.
+   fetch 대신 <script> 로 읽어서 PC에서 파일을 직접 열어도 사진이 보인다 */
+{
+  const byName = new Map([...people.values()].map(p => [p.name.normalize("NFC"), p.id]));
+  for (const [name, file] of Object.entries(window.KHK3_FILES || {})) {
+    const id = byName.get(name.normalize("NFC"));
+    if (id && typeof file === "string") photos[id] = "photos/" + encodeURIComponent(file);
+  }
+  paintAll();
+}
+
+/* 사진 서버가 응답하면 등록 기능을 켠다 (PC에서 파일로 열거나 미리보기에서는 보기 전용) */
+loadUploaded()
+  .then(() => {
+    canUpload = true;
+    if (current && !busy) paintSheet();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && !busy) loadUploaded().catch(() => {}); });
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
